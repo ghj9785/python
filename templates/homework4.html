@@ -1,0 +1,284 @@
+<html>
+
+<head>
+    <title>Welcome to J Market</title>
+    <link href="https://fonts.googleapis.com/css?family=Poor+Story&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            background-image: url('https://imagescdn.gettyimagesbank.com/500/18/618/255/0/962036806.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .wrap {
+            width: 600px;
+            margin: 50px auto 0 auto;
+
+        }
+
+        * {
+
+            font-family: 'Poor Story', cursive;
+        }
+
+        .name>h1 {
+            /* margin: 0 0 10px 0; */
+            text-align: center;
+        }
+
+        .image {
+
+            background-image: url('https://post-phinf.pstatic.net/MjAxNzEyMThfMTk4/MDAxNTEzNTc3NjYyMzYy.bXU_M8wPvXbcDg87GPEAz8Lj8DPJJoAFSJHJZ1hNtvgg.ghK1lgARHh88j0W_AInajbrXAwE4aiuSXsCRCDTu34Mg.JPEG/%EC%84%9D%EA%B3%A0%EB%B0%A9%ED%96%A5%EC%A0%9C.jpg?type=w1200');
+            /* background-size: cover; */
+            background-position: center;
+            width: 600px;
+            height: 350px;
+            border-radius: 30px;
+            margin: auto;
+        }
+
+        .name {
+            font-family: 'Yeon Sung', cursive;
+            font-family: 'Stylish', sans-serif;
+            font-family: 'Song Myung', serif;
+            font-family: 'Viaoda Libre', cursive;
+            font-style: italic;
+            font-weight: bolder;
+            color: darkgreen;
+        }
+
+        .form-post {
+            padding: 1.5rem;
+            margin: 1rem auto;
+            border-color: darkgoldenrod;
+            border-radius: 0.3rem;
+            border: solid;
+            display: block;
+        }
+
+        .mytitle>h2 {
+            margin: 20px 0 0 0;
+        }
+
+        .mytitle>h5 {
+            margin: 5px 0 0 0;
+        }
+
+        .mytitle>h4 {
+            margin: 30px 0 0 0;
+            /* padding: auto; */
+        }
+
+        .mybtn {
+            margin: 0 0 50px 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            margin-left: 350px;
+        }
+
+        .table_1 {
+            background-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+
+    <script>
+
+        function btn1() {
+
+            let name = $('#input-name');
+            let option = $('#input-option');
+            let address = $('#input-address');
+            let number = $('#input-number');
+
+            if (name.val() == '') {
+                alert('이름을 입력하세요!');
+                name.focus();
+                return;
+            }
+
+            if (option.val() == '') {
+                alert('옵션을 선택하세요!');
+                option.focus();
+                return;
+            }
+
+            if (address.val() == '') {
+                alert('주소를 입력하세요!');
+                address.focus();
+                return;
+            }
+
+            if (number.val() == '') {
+                alert('전화번호를 입력하세요!');
+                number.focus();
+                return;
+            }
+
+
+            else {
+                alert('주문이 완료되었습니다 :)');
+                let temp_html = '<tr> <td>' + $('#input-name').val() + '</td><td>' + $('#input-option').val() + '</td><td>' + $('#input-address').val() + '</td><td>' + $('#input-number').val() + '</td></tr>'
+                $('#order_table').append(temp_html);
+                $('#input-name').val('');
+                $('#input-option').val('');
+                $('#input-address').val('');
+                $('#input-number').val('');
+            }
+
+            function btn2() {
+                $('#order_table').empty();
+
+            }
+
+            function btn3() {
+                alert('연락드리겠습니다 ^^');
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/orders",
+                data: { name_give: name, option_give: option, address_give: address, number_give: number },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                        $('#input-name').val('');
+                        $('#input-option').val('');
+                        $('#input-address').val('');
+                        $('#input-number').val('');
+                        window.location.reload();
+                    }
+                }
+            })
+
+        }
+
+        $(document).ready(function () {
+            $('#order_table').html('');
+            listing();
+        });
+
+        function listing() {
+            $.ajax({
+                type: "GET",
+                url: "/orders",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let orders = response['orders'];
+                        for (let i = 0; i < reviews.length; i++) {
+                            make_card(orders[i]['name'], orders[i]['option'], orders[i]['address'], orders[i]['number']);
+                        }
+                    } else {
+                        alert('주문이 완료되지 않았습니다.');
+                    }
+                }
+            })
+        }
+
+        function make_card(name, option, address, number) {
+            let temp_html = '<tr>\
+                                <td>'+ name + '</td>\
+                                <td>'+ option + '</td>\
+                                <td>'+ address + '</td>\
+                                <td>'+ number + '</td>\
+                            </tr>';
+            $('#order-table').append(temp_html);
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <div class="wrap">
+
+        <div class="name">
+            <marquee direction="right">
+                <h1> ♥ J 마켓 ♥ </h1>
+            </marquee>
+
+        </div>
+
+        <div class="image">
+
+        </div>
+
+        <div class="mytitle">
+            <h2> 석고방향제를 골라보세요 ♥ </h2>
+            <h5>가격: 5,000원/개 </h5>
+            <h4> <span style="color:darkslateblue"> 선물하기 좋은 석고방향제 입니다. 향기를 선물해보세요! </span>
+            </h4>
+
+        </div>
+
+        <div class="form-post">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">주문자 이름</span>
+                </div>
+                <input id="input-name" type="text" class="form-control" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm">
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">옵션</label>
+                </div>
+                <select id="input-option" class="custom-select" id="inputGroupSelect01">
+                    <option value="" selected> 석고 방향제를 고르세요 </option>
+                    <option value="1">베어브릭 방향제</option>
+                    <option value="2">선인장 방향제</option>
+                    <option value="3">돌하르방 방향제</option>
+                </select>
+            </div>
+
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">주소</span>
+                </div>
+                <input id="input-address" type="text" class="form-control" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm">
+
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">전화 번호</span>
+                </div>
+                <input id="input-number" type="text" class="form-control" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm">
+            </div>
+        </div>
+        <div class="mybtn">
+            <button onclick="btn1()" type="button" class="btn btn-primary">구매하기</button>
+            <button onclick="btn2()" type="button" class="btn btn-success">구매취소</button>
+            <button onclick="btn3()" type="button" class="btn btn-warning">기타문의</button>
+        </div>
+
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th scope="col">이름</th>
+                        <th scope="col">옵션</th>
+                        <th scope="col">주소</th>
+                        <th scope="col">전화번호</th>
+                    </tr>
+                </thead>
+                </tr>
+                <tbody class='table_1' id="order_table">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
